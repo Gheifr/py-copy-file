@@ -1,4 +1,4 @@
-from os.path import exists
+from os.path import exists, samefile
 
 
 def copy_file(command: str) -> None:
@@ -15,12 +15,10 @@ def copy_file(command: str) -> None:
         if exists(target_file):
             with (open(target_file, "r") as target,
                   open(source_file, "r") as source):
-                if source.read() == target.read():
+                if samefile(target.name, source.name):
                     return
 
         with (open(source_file, "r") as source,
               open(target_file, "w") as target):
-            try:
-                target.writelines(source.readlines())
-            except FileNotFoundError:
-                raise
+            for line in source:
+                target.writelines(line)
